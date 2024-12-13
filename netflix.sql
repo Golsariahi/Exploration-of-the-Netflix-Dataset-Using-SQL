@@ -1,5 +1,7 @@
 /*
+
 Cleaning the Dataset in SQL
+
 */
  
 -- Convert 'date_added' to a standardized format (MM-DD-YYYY) for consistency.
@@ -34,7 +36,9 @@ WHERE t1.temp_id > t2.temp_id;
 
 
 /*
-Exploratory Analysis Queries 
+
+Exploratory Analysis Queries
+
 */
 
 -- Retrieve all titles directed by a specific director ('Andy Devonshire').
