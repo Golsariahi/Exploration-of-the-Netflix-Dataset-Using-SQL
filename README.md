@@ -2,12 +2,12 @@ Data Cleaning and Exploration of the Netflix Dataset Using SQL
 
 This project demonstrates the use of SQL for comprehensive data cleaning and exploratory data analysis on a Netflix dataset.
 
-Data Cleaning
+1. Data Cleaning
 -Handled Missing Values: Replaced all NULL values in critical columns such as director, country, and date_added with appropriate placeholders (e.g., "Unknown").
 -Standardized Formats: Transformed date formats from dd-MMM-yy to the U.S. format MMM-dd-YYYY for consistency.
 -Removed Duplicates: Ensured data quality by identifying and deleting duplicate rows.
 
-Exploratory Data Analysis (EDA)
+2. Exploratory Data Analysis (EDA)
 Content Trends:
 -Analyze Most Common Release Years: Identify the year with the highest number of content releases, showcasing the platform's most active periods.
 -Content Distribution by Type: Compare the total number of movies versus TV shows to understand content preferences.
