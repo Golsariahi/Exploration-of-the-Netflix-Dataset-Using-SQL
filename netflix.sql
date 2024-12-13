@@ -15,15 +15,42 @@ SET duration = CAST(SUBSTRING_INDEX(duration, ' ', 1) AS UNSIGNED)
 WHERE duration LIKE '% min';
 
 --  Replace NULL values in key columns with 'Unknown' to avoid missing data in analysis.
-UPDATE db.netflix SET director = 'Unknown' WHERE director IS NULL;
-UPDATE db.netflix SET date_added = 'Unknown' WHERE date_added IS NULL;
-UPDATE db.netflix SET release_year = '0' WHERE release_year IS NULL;
-UPDATE db.netflix SET rating = 'Unknown' WHERE rating IS NULL;
-UPDATE db.netflix SET duration = 'Unknown' WHERE duration IS NULL;
-UPDATE db.netflix SET cast = 'Unknown' WHERE cast IS NULL;
-UPDATE db.netflix SET country = 'Unknown' WHERE country IS NULL;
-UPDATE db.netflix SET listed_in = 'Unknown' WHERE listed_in IS NULL;
-UPDATE db.netflix SET description = 'Unknown' WHERE description IS NULL;
+UPDATE db.netflix 
+ SET director = 'Unknown' 
+ WHERE director IS NULL;
+
+UPDATE db.netflix 
+ SET date_added = 'Unknown' 
+ WHERE date_added IS NULL;
+
+UPDATE db.netflix 
+ SET release_year = '0' 
+ WHERE release_year IS NULL;
+
+UPDATE db.netflix 
+ SET rating = 'Unknown' 
+ WHERE rating IS NULL;
+
+UPDATE db.netflix 
+ SET duration = 'Unknown' 
+ WHERE duration IS NULL;
+
+UPDATE db.netflix 
+ SET cast = 'Unknown' 
+ WHERE cast IS NULL;
+
+UPDATE db.netflix 
+ SET country = 'Unknown' 
+ WHERE country IS NULL;
+
+UPDATE db.netflix 
+ SET listed_in = 'Unknown' 
+ WHERE listed_in IS NULL;
+
+UPDATE db.netflix 
+ SET description = 'Unknown'
+ WHERE description IS NULL;
+
 
 -- remove duplicates
 ALTER TABLE db.netflix ADD COLUMN temp_id INT AUTO_INCREMENT PRIMARY KEY;
