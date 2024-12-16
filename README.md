@@ -63,11 +63,6 @@ SQL queries were used to analyze content trends and extract actionable insights:
 
 ---
 
-## Tools and Technologies  
-- **SQL:** Used for data cleaning, exploration, and trend analysis.  
-- **Database Management:** Queries executed on a structured dataset for consistent results.  
-
----
 
 ## Future Enhancements  
 1. Incorporate user engagement metrics to analyze content performance.  
