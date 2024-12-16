@@ -63,7 +63,6 @@ SQL queries were used to analyze content trends and extract actionable insights:
 
 ---
 
-
 ## Future Enhancements  
 1. Incorporate user engagement metrics to analyze content performance.  
 2. Use machine learning models for predicting popular genres in new markets.  
