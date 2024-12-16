@@ -63,12 +63,6 @@ SQL queries were used to analyze content trends and extract actionable insights:
 
 ---
 
-## Future Enhancements  
-1. Incorporate user engagement metrics to analyze content performance.  
-2. Use machine learning models for predicting popular genres in new markets.  
-3. Expand analysis to include data from competitors like Disney+ or Amazon Prime Video.  
-
----
 
 ## Conclusion  
 This project highlights the importance of clean, structured data in driving meaningful insights. By using SQL to explore Netflix’s dataset, actionable trends and strategies were identified to help the platform stay competitive and improve content recommendations.
