@@ -60,10 +60,10 @@ WHERE type = 'movie' AND imdbRating IS NOT NULL
 ORDER BY imdbRating DESC
 LIMIT 5;
 
--- 3. Content Production Trend Over Time (1990 to 2024)
+-- 3. Content Production Trend Over Time (2000 to 2024)
 SELECT releaseYear, COUNT(*) AS content_count
 FROM db.netflix
-where releaseYear > 1990
+where releaseYear > 2000
 GROUP BY releaseYear
 ORDER BY releaseYear ASC;
 
@@ -104,17 +104,17 @@ GROUP BY genres
 ORDER BY genre_count DESC
 LIMIT 5;
 
--- 8. Number of Content Added Each Year (1990 to 2024)
+-- 8. Number of Content Added Each Year (2000 to 2024)
 SELECT releaseYear, COUNT(*) AS content_count
 FROM db.netflix
-where releaseYear > 1990
+where releaseYear > 2000
 GROUP BY releaseYear
 ORDER BY releaseYear ASC;
 
--- 9. Number of Movies and TV Shows Released Each Year (1990 to 2024)
+-- 9. Number of Movies and TV Shows Released Each Year (2000 to 2024)
 SELECT releaseYear, type, COUNT(*) AS content_count
 FROM db.netflix
-where releaseYear > 1990
+where releaseYear > 2000
 GROUP BY releaseYear, type
 ORDER BY releaseYear ASC, content_count DESC;
 
