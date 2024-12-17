@@ -1,202 +1,132 @@
+--pick database
+USE db;
+
+-- Create table netflix
+CREATE TABLE netflix (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255),
+    type VARCHAR(50),
+    genres VARCHAR(255),
+    releaseYear INT,
+    imdbId VARCHAR(20),
+    imdbRating VARCHAR(100),
+    imdbNumVotes INT,
+    availableCountries TEXT
+);
+
+
 /*
-
-Cleaning the Dataset in SQL
-
+Cleaning the netflix Dataset in SQL
 */
+ Select * from db.netflix ;
+
  
--- Convert 'date_added' to a standardized format (MM-DD-YYYY) for consistency.
+-- Replace NULL values to avoid missing data in analysis.
+UPDATE db.netflix SET title = 'Unknown Title' WHERE title IS NULL;
+UPDATE db.netflix SET type = 'Unknown' WHERE type IS NULL;
+UPDATE db.netflix SET genres = 'Unknown Genre' WHERE genres IS NULL;
+UPDATE db.netflix SET releaseYear = 0 WHERE releaseYear IS NULL;
+UPDATE db.netflix SET imdbId = 'No ID' WHERE imdbId IS NULL;
+UPDATE db.netflix SET imdbRating = 0 WHERE imdbRating IS NULL;
+UPDATE db.netflix SET imdbNumVotes = 0 WHERE imdbNumVotes IS NULL;
+UPDATE db.netflix SET availableCountries = 'Unknown' WHERE availableCountries IS NULL;
 
+-- Convert title of genres to lower case for consistency
 UPDATE db.netflix
-SET date_added = DATE_FORMAT(STR_TO_DATE(date_added, '%d-%b-%y'), '%b-%d-%Y')
-WHERE date_added IS NOT NULL;
+SET genres = LOWER(genres), type = LOWER(type);
 
-
--- Convert 'duration' to numeric by removing 'min' for easier sorting and analysis.
-
+-- Convert Titles to Proper Case:
 UPDATE db.netflix
-SET duration = CAST(SUBSTRING_INDEX(duration, ' ', 1) AS UNSIGNED)
-WHERE duration LIKE '% min';
+SET title = CONCAT(UPPER(LEFT(title, 1)), LOWER(SUBSTRING(title, 2)))
+WHERE title IS NOT NULL;
 
-
---  Replace NULL values in key columns with 'Unknown' to avoid missing data in analysis.
-
-UPDATE db.netflix 
- SET director = 'Unknown' 
- WHERE director IS NULL;
-
-UPDATE db.netflix 
- SET date_added = 'Unknown' 
- WHERE date_added IS NULL;
-
-UPDATE db.netflix 
- SET release_year = '0' 
- WHERE release_year IS NULL;
-
-UPDATE db.netflix 
- SET rating = 'Unknown' 
- WHERE rating IS NULL;
-
-UPDATE db.netflix 
- SET duration = 'Unknown' 
- WHERE duration IS NULL;
-
-UPDATE db.netflix 
- SET cast = 'Unknown' 
- WHERE cast IS NULL;
-
-UPDATE db.netflix 
- SET country = 'Unknown' 
- WHERE country IS NULL;
-
-UPDATE db.netflix 
- SET listed_in = 'Unknown' 
- WHERE listed_in IS NULL;
-
-UPDATE db.netflix 
- SET description = 'Unknown'
- WHERE description IS NULL;
-
-
--- remove duplicates
-
-ALTER TABLE db.netflix ADD COLUMN temp_id INT AUTO_INCREMENT PRIMARY KEY;
-
-DELETE t1
-FROM db.netflix t1
-INNER JOIN db.netflix t2
-ON t1.title = t2.title
-WHERE t1.temp_id > t2.temp_id;
-
+-- 
 
 /*
-
-Exploratory Analysis Queries
-
+Exploratory Analysis Queries 
 */
 
--- Retrieve all titles directed by a specific director ('Andy Devonshire').
-
-Select title, Director
-from db.netflix
-where director = "Andy Devonshire";
-
-
--- Query to find Content from USA
-
-SELECT title, country
+-- 1. Top 5 Genres by Content Volume
+SELECT genres, COUNT(*) AS genre_count
 FROM db.netflix
-WHERE country = 'United States';
+GROUP BY genres
+ORDER BY genre_count DESC
+LIMIT 5;
 
-
--- Query to find movies released in 2021 produced in the USA
-
-SELECT title, release_year, country
+-- 2. Top 5 Most Rated Movies on Netflix
+SELECT title, releaseYear, imdbRating
 FROM db.netflix
-WHERE country = 'United States' and release_year= 2021;
+WHERE type = 'movie' AND imdbRating IS NOT NULL
+ORDER BY imdbRating DESC
+LIMIT 5;
 
-
--- Query to count the total number of entries for each content type (e.g., Movie, TV Show).
-
-Select Type, count(*) as total
-from db.netflix
-group by type
-ORDER BY total DESC;
-
-
--- Query to find most common release year 
-
-SELECT release_year, COUNT(*) AS total
+-- 3. Content Production Trend Over Time (1990 to 2024)
+SELECT releaseYear, COUNT(*) AS content_count
 FROM db.netflix
-GROUP BY release_year
-ORDER BY total DESC
-LIMIT 1;
+where releaseYear > 1990
+GROUP BY releaseYear
+ORDER BY releaseYear ASC;
 
-
--- Query to find the number of movies released each year.
-
-SELECT type, release_year, COUNT(*) AS total
+-- 3. Top 5 highest rating content
+SELECT  title, type, releaseYear, imdbRating
 FROM db.netflix
-where type = "movie"
-GROUP BY release_year
-ORDER BY total DESC;
+where type = 'movie'
+ORDER BY imdbRating DESC
+LIMIT 5;
 
-
--- Retrieve the movie with the longest duration in the dataset.
-
-SELECT title, duration
+-- 4. Top 5 Genres with the Highest Average IMDb Ratings
+SELECT genres, AVG(imdbRating) AS avg_rating
 FROM db.netflix
-WHERE type = 'Movie'
-ORDER BY duration DESC
-LIMIT 1;
+WHERE imdbRating IS NOT NULL
+GROUP BY genres
+ORDER BY avg_rating DESC
+LIMIT 5;
 
-
--- Retrieve the movie with the shortest duration in the dataset.
-
-SELECT title, duration
+-- 5. Distribution of Content Types (Movies vs. TV Shows)
+SELECT type, COUNT(*) AS content_count
 FROM db.netflix
-WHERE type = 'Movie'
-ORDER BY duration ASC
-LIMIT 1; 
+GROUP BY type
+ORDER BY content_count DESC;
 
-
--- Identify the most common content type (Movie or TV Show) produced in each country.
-
-SELECT country, type, COUNT(*) AS total
+-- 6. Top 5 Genres with the Most Movies
+SELECT genres, COUNT(*) AS genre_count
 FROM db.netflix
-GROUP BY country, type
-ORDER BY country, total DESC;
+WHERE type = 'movie'
+GROUP BY genres
+ORDER BY genre_count DESC
+LIMIT 5;
 
-
---  Top 10 directors in 2024
-
-SELECT director, COUNT(*) AS total_movies
+-- 7. Top 5 Tv series with the Most Movies
+SELECT genres, COUNT(*) AS genre_count
 FROM db.netflix
-WHERE type = 'Movie' AND release_year = 2024
-GROUP BY director
-ORDER BY total_movies DESC
-limit 10;
+WHERE type = 'tv'
+GROUP BY genres
+ORDER BY genre_count DESC
+LIMIT 5;
 
-
---  Query to find movies listed in the 'Kids' category
-
-SELECT title, release_year, country, listed_in
+-- 8. Number of Content Added Each Year (1990 to 2024)
+SELECT releaseYear, COUNT(*) AS content_count
 FROM db.netflix
-WHERE listed_in Like '%Kid%'
-ORDER BY release_year ASC;
+where releaseYear > 1990
+GROUP BY releaseYear
+ORDER BY releaseYear ASC;
 
+-- 9. Number of Movies and TV Shows Released Each Year (1990 to 2024)
+SELECT releaseYear, type, COUNT(*) AS content_count
+FROM db.netflix
+where releaseYear > 1990
+GROUP BY releaseYear, type
+ORDER BY releaseYear ASC, content_count DESC;
 
--- Find the top 3 countries with the highest number of Netflix content titles.
+-- 10. Genres with Lowest Average IMDb Ratings
+SELECT genres, AVG(imdbRating) AS avg_rating
+FROM db.netflix
+where releaseYear > 1990
+GROUP BY genres
+ORDER BY avg_rating ASC;
 
-SELECT country, COUNT(*) AS total_movies 
-FROM db.netflix 
-GROUP BY country 
-ORDER BY total_movies DESC
-limit 4;
-
-
--- Get insights into the average movie length for different genres
-
-SELECT listed_in, AVG(duration) AS avg_duration 
-FROM db.netflix 
-WHERE type = 'Movie' AND duration != 'Unknown' 
-GROUP BY listed_in 
-ORDER BY avg_duration DESC;
-
-
--- Top 3 genres in general
-
-SELECT listed_in , COUNT(*) AS content_count 
-FROM db.netflix 
-GROUP BY listed_in  
-ORDER BY content_count DESC
-limit 3;
-
-
--- Query to find the top 3 genres in the USA
-
-SELECT listed_in, COUNT(*) AS content_count 
-FROM db.netflix 
-WHERE country = 'United States' 
-GROUP BY listed_in 
-ORDER BY content_count DESC
-LIMIT 3;
+-- 11. -- Movies Available in the United States
+SELECT title, releaseYear, imdbAverageRating, availableCountries
+FROM db.netflix
+WHERE availableCountries LIKE '%US%'
+ORDER BY releaseYear DESC;
